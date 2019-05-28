@@ -1,3 +1,5 @@
+Appologies on the messy code structure, I just wanted to put this together quick for use and never extend it.
+
 # LearnLessonDownloader
 
 # What it does
