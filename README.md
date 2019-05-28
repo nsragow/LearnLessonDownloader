@@ -8,12 +8,13 @@ I suggest downloading one section at a time.
 If you run this twice without changing the clone_to_path the behavior is unspecified (don't do it).
 
 # How to run
-Please edit the top fields (chromedriver_path[path to [chromedriver](https://sites.google.com/a/chromium.org/chromedriver/)], <br>
+Please edit the top fields (<br>
+chromedriver_path[path to [chromedriver](https://sites.google.com/a/chromium.org/chromedriver/)], <br>
 username[for Learn],<br>
 password_text[for Learn], <br>
 start [URL for the first lesson to download],<br>
 clone_to_path [dir where you want the files to drop into], <br>
-lesson_count [how many lessons to be downloaded])<br>
+lesson_count [how many lessons to be downloaded]<br>)<br>
 if you want the software to run on your machine.
 <br>
 Otherwise you just need to: `python3 download.py`
