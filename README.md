@@ -9,9 +9,9 @@ If you run this twice without changing the clone_to_path the behavior is unspeci
 
 # How to run
 Please edit the top fields (<br>
-chromedriver_path[path to [chromedriver](https://sites.google.com/a/chromium.org/chromedriver/)], <br>
-username[for Learn],<br>
-password_text[for Learn], <br>
+chromedriver_path [path to [chromedriver](https://sites.google.com/a/chromium.org/chromedriver/)], <br>
+username [for Learn],<br>
+password_text [for Learn], <br>
 start [URL for the first lesson to download],<br>
 clone_to_path [dir where you want the files to drop into], <br>
 lesson_count [how many lessons to be downloaded]<br>)<br>
