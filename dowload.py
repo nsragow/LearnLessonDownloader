@@ -66,4 +66,5 @@ for x in range(lesson_count):
 
 for x in range(len(links)):
     print("running...")
-    run_bash(f"git clone {links[x]} {clone_to_path+"/"+str(x)}")
+    next_path = clone_to_path+"/"+str(x)
+    run_bash(f"git clone {links[x]} {next_path}")
