@@ -320,3 +320,10 @@ IPDL protocol error: Handler returned error code!
 JavaScript error: chrome://browser/content/browser-customization.js, line 167: NS_ERROR_NOT_INITIALIZED: 
 [Parent 21647, Gecko_IOThread] WARNING: pipe error (65): Connection reset by peer: file /build/firefox/src/mozilla-unified/ipc/chromium/src/chrome/common/ipc_channel_posix.cc, line 357
 1559190477589	Marionette	INFO	Stopped listening on port 37307
+1559240435069	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-foreground" "-no-remote" "-profile" "/tmp/rust_mozprofile.UUh44U4lZjnt"
+1559240435554	addons.webextension.screenshots@mozilla.org	WARN	Loading extension 'screenshots@mozilla.org': Reading manifest: Invalid extension permission: mozillaAddons
+1559240435554	addons.webextension.screenshots@mozilla.org	WARN	Loading extension 'screenshots@mozilla.org': Reading manifest: Invalid extension permission: resource://pdf.js/
+1559240435554	addons.webextension.screenshots@mozilla.org	WARN	Loading extension 'screenshots@mozilla.org': Reading manifest: Invalid extension permission: about:reader*
+1559240437159	Marionette	INFO	Listening on port 38585
+1559240437182	Marionette	WARN	TLS certificate errors will be ignored for this session
+1559240438709	Marionette	INFO	Stopped listening on port 38585

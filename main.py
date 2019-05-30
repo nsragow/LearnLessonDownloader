@@ -3,24 +3,40 @@ from selenium.webdriver.common.keys import Keys
 import time
 from os import system as run_bash
 import re
+import json
+from Crypto.Cipher import AES
+from Crypto import Random
 
 
-"""
-Make sure to edit the following fields!!!!
-"""
-chromedriver_path = "/usr/bin/firefox"
+config = None
+with open("config.json", "r") as cfg:
+    config = json.load(cfg)
+
+chromedriver_path = config["web_driver_path"]
 # login credentials for learn
-username = "email"
-password_text = "password"
+username = config["email"]
+password_crypt = config["password"]
 # the first lesson to clone
-start = "https://learn.co/tracks/data-science-career-v2/module-2-data-engineering-for-data-science/section-14-more-sql/introduction"
+start = config["first_lesson"]
 # the directory to drop all the files into
-clone_to_path = "./"
+clone_to_path = config["clone_to_path"]
 # how many lessons to download
-lesson_count = 9
+lesson_count = config["lesson_count"]
+# the type of browser you are using
+browser = config["browser"]
+
+key = b"Sixteen byte key"
+iv = Random.new().read(AES.block_size)
+cipher = AES.new(key, AES.MODE_CFB, iv)
+# password = cipher.decrypt(password_crypt.decode("hex"))
+password = cipher.decrypt(bytes.fromhex(password_crypt))[len(iv) :].decode()
 
 # driver = webdriver.Chrome(executable_path=chromedriver_path)
-driver = webdriver.Firefox()
+driver = None
+if browser == "firefox":
+    driver = webdriver.Firefox()
+if browser == "chrome":
+    driver = webdriver.Chrome()
 
 url = "https://learn.co/"
 driver.get(url)

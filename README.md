@@ -1,7 +1,7 @@
 forked from https://github.com/nsragow/LearnLessonDownloader
 
 # My Changes
-* added better fire naming
+* added better naming
 * works with firefox
 * dosen't take as long
 
