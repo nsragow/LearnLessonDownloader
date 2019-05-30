@@ -9,12 +9,12 @@ Make sure to edit the following fields!!!!
 '''
 chromedriver_path = "/Users/noah/Test/chromedriver"
 #login credentials for learn
-username = "?"
-password_text = "?"
+username = ""
+password_text = ""
 #the first lesson to clone
-start ="https://learn.co/tracks/somelesson"
+start ="https://learn.co/tracks/data-science-career-v2/module-3-probability-sampling-and-ab-testing/section-19-central-limit-theorem-and-confidence-intervalsl/introduction"
 #the directory to drop all the files into
-clone_to_path = "/Users/someuser/Flatiron/Lessons/3Module/20section"
+clone_to_path = "/Users/noah/Flatiron/Lessons/3Module/19section"
 #how many lessons to download
 lesson_count = 9
 
@@ -66,4 +66,5 @@ for x in range(lesson_count):
 
 for x in range(len(links)):
     print("running...")
-    run_bash(f"git clone {links[x]} {clone_to_path+"/"+str(x)}")
+    next_path = clone_to_path+"/"+str(x)
+    run_bash(f"git clone {links[x]} {next_path}")
