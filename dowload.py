@@ -12,11 +12,13 @@ chromedriver_path = "/Users/noah/Test/chromedriver"
 username = ""
 password_text = ""
 #the first lesson to clone
-start ="https://learn.co/tracks/data-science-career-v2/module-3-probability-sampling-and-ab-testing/section-19-central-limit-theorem-and-confidence-intervalsl/introduction"
+start ="https://learn.co/tracks/data-science-career-v2/module-3-probability-sampling-and-ab-testing/section-21-statistical-power-and-anova/introduction"
 #the directory to drop all the files into
-clone_to_path = "/Users/noah/Flatiron/Lessons/3Module/19section"
+clone_to_path = "/Users/noah/Flatiron/Lessons/3Module/20section"
+if clone_to_path[-1] == "/":
+    clone_to_path = clone_to_path[:-1]
 #how many lessons to download
-lesson_count = 9
+lesson_count = 11
 
 driver = webdriver.Chrome(executable_path=chromedriver_path)
 
@@ -59,12 +61,21 @@ def get_gitlink():
     return driver.find_element_by_css_selector("a.button--color-grey-faint.button--icon-only").get_attribute("href")
 links = []
 for x in range(lesson_count):
-
-    links.append(get_gitlink())
+    next_link = get_gitlink()
+    while next_link in links:
+        time.sleep(3)
+        next_link = get_gitlink()
+    links.append(next_link)
     next_lesson()
-    time.sleep(20)
+    dowload(x,next_link)
 
-for x in range(len(links)):
-    print("running...")
-    next_path = clone_to_path+"/"+str(x)
-    run_bash(f"git clone {links[x]} {next_path}")
+def download(index,link):
+    next_path = "%s/%03d-%s" % (
+        clone_to_path,
+        index + 1,
+        re.sub(r".+(?<=\/)", "", link),
+    )
+
+    run_bash(f"git clone {link} {next_path}")
+
+    
