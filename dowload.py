@@ -62,7 +62,7 @@ for x in range(lesson_count):
 
     links.append(get_gitlink())
     next_lesson()
-    time.sleep(5)
+    time.sleep(20)
 
 for x in range(len(links)):
     print("running...")
