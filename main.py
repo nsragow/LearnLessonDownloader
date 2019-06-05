@@ -5,68 +5,100 @@ import time
 from os import system as run_bash
 import re
 import json
-from Crypto.Cipher import AES
-from Crypto import Random
 import sys
+import atexit
+import auth
 
+# load the config
 config = None
 with open("config.json", "r") as cfg:
     config = json.load(cfg)
 
-chromedriver_path = config["web_driver_path"]
-# login credentials for learn
+# config variables
 username = config["email"]
 password_crypt = config["password"]
-# the first lesson to clone
-start = config["first_lesson"]
-# the directory to drop all the files into
-clone_to_path = config["clone_to_path"]
-# how many lessons to download
-lesson_count = config["lesson_count"]
-# the type of browser you are using
+
+chromedriver_path = config["web_driver_path"]
 browser = config["browser"]
-# idle time is how much time between each action
+
+clone_to_path = config["clone_to_path"]
+first_lesson = config["first_lesson"]
+last_lesson = config["last_lesson"]
+lesson_count = config["lesson_count"]
 idle_time = config["idle_time"]
 
-key = b"Sixteen byte key"
-iv = Random.new().read(AES.block_size)
-cipher = AES.new(key, AES.MODE_CFB, iv)
 
-# password = cipher.decrypt(password_crypt.decode("hex"))
-password = cipher.decrypt(bytes.fromhex(password_crypt))[len(iv) :].decode()
-
-# driver = webdriver.Chrome(executable_path=chromedriver_path)
-driver = None
-if browser == "firefox":
-    driver = webdriver.Firefox()
-if browser == "chrome":
-    driver = webdriver.Chrome()
-
-url = "https://learn.co/"
-driver.get(url)
-
-login_field = driver.find_element_by_css_selector("input#user-email.input__field")
-password_field = driver.find_element_by_css_selector("input#user-password.input__field")
-login_field.send_keys(username)
-
-password_field.send_keys(password)
-password_field.send_keys(Keys.RETURN)
-
-
-time.sleep(idle_time)
-driver.get(start)
-gitlink = driver.find_element_by_css_selector(
-    "a.button--color-grey-faint.button--icon-only"
-).get_attribute("href")
-
-
+# buttons that could lead to the next page
 proceed_b = "a.js--button.button.module--cloud__button--main"
 small_b = "div.js--feature-tour-done-button.js--next-button.status-alert__bubble--with-icon.status-alert__bubble--with-icon--color-inverted.status-alert__bubble--main.hoverable"
 big_b = "div.status-alert__button--main.button.button--height-large.button--corners-tight.button--layout-block.js--next-button"
 
-time.sleep(idle_time)
+
+def main():
+    password = None
+    try:
+        auth.decrypt(password_crypt)
+    except:
+        print("invalid credentials")
+        sys.exit()
+
+    # get a driver for the specified browser and defer the closing of the browser
+    # to the exit of the program
+    driver = None
+    if browser == "firefox":
+        driver = webdriver.Firefox()
+    if browser == "chrome":
+        driver = webdriver.Chrome()
+    atexit.register(lambda: driver.close() if driver else None)
+
+    # go to the LearnCo login page
+    url = "https://learn.co/"
+    driver.get(url)
+
+    login_field = driver.find_element_by_css_selector("input#user-email.input__field")
+    password_field = driver.find_element_by_css_selector(
+        "input#user-password.input__field"
+    )
+    login_field.send_keys(username)
+
+    # enter password
+    password_field.send_keys(password)
+    password_field.send_keys(Keys.RETURN)
+
+    # sleep past login page and get the first lesson
+    time.sleep(idle_time)
+    driver.get(first_lesson)
+
+    # crawl the page
+    links = []
+    while True:
+        time.sleep(idle_time)
+
+        link = get_gitlink()
+        links.append(link)
+        next_lesson()
+        # break if reached final url
+        if driver.current_url == last_lesson:
+            break
+        # break if grabbed too many links
+        if len(links) >= lesson_count:
+            break
+
+    # close the browser
+    driver.close()
+
+    # git clone each link:
+    for link in links:
+        next_path = "%s/%03d-%s" % (
+            clone_to_path,
+            x + 1,
+            re.sub(r".+(?<=\/)", "", link),
+        )
+        run_bash("git clone %s %s" % (link, next_path))
 
 
+# next_lesson will get the next lesson by attempling to click on the correct
+# button to go to the next lesson
 def next_lesson():
     global small_b, big_b, proceed_b
     next_b = driver.find_element_by_css_selector(small_b)
@@ -87,27 +119,12 @@ def next_lesson():
         print("no proceed")
 
 
+# get_gitlink will get the href attribute of the GitHub button on LearnCo
 def get_gitlink():
     return driver.find_element_by_css_selector(
         "a.button--color-grey-faint.button--icon-only"
     ).get_attribute("href")
 
 
-links = []
-for x in range(lesson_count):
-
-    links.append(get_gitlink())
-    next_lesson()
-    time.sleep(idle_time)
-
-#close the browser
-driver.close()
-
-for x in range(len(links)):
-    next_path = "%s/%03d-%s" % (
-        clone_to_path,
-        x + 1,
-        re.sub(r".+(?<=\/)", "", links[x]),
-    )
-    run_bash(f"git clone {links[x]} {next_path}")
-
+if __name__ == "__main__":
+    main()
