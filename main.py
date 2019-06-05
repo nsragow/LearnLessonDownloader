@@ -49,7 +49,7 @@ def main():
         driver = webdriver.Firefox()
     if browser == "chrome":
         driver = webdriver.Chrome()
-    atexit.register(lambda: driver.close() if driver else None)
+    atexit.register(lambda: close_driver(driver))
 
     # go to the LearnCo login page
     url = "https://learn.co/"
@@ -74,9 +74,9 @@ def main():
     while True:
         time.sleep(idle_time)
 
-        link = get_gitlink()
+        link = get_gitlink(driver)
         links.append(link)
-        next_lesson()
+        next_lesson(driver)
         # break if reached final url
         if driver.current_url == last_lesson:
             break
@@ -88,10 +88,10 @@ def main():
     driver.close()
 
     # git clone each link:
-    for link in links:
+    for i, link in enumerate(links):
         next_path = "%s/%03d-%s" % (
             clone_to_path,
-            x + 1,
+            i + 1,
             re.sub(r".+(?<=\/)", "", link),
         )
         run_bash("git clone %s %s" % (link, next_path))
@@ -99,7 +99,7 @@ def main():
 
 # next_lesson will get the next lesson by attempling to click on the correct
 # button to go to the next lesson
-def next_lesson():
+def next_lesson(driver):
     global small_b, big_b, proceed_b
     next_b = driver.find_element_by_css_selector(small_b)
 
@@ -120,11 +120,18 @@ def next_lesson():
 
 
 # get_gitlink will get the href attribute of the GitHub button on LearnCo
-def get_gitlink():
+def get_gitlink(driver):
     return driver.find_element_by_css_selector(
         "a.button--color-grey-faint.button--icon-only"
     ).get_attribute("href")
 
+
+# close_driver will attempt to close a driver and suppress output
+def close_driver(driver):
+    try:
+        driver.close()
+    except:
+        pass
 
 if __name__ == "__main__":
     main()
