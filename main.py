@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 import time
@@ -28,6 +29,7 @@ browser = config["browser"]
 key = b"Sixteen byte key"
 iv = Random.new().read(AES.block_size)
 cipher = AES.new(key, AES.MODE_CFB, iv)
+
 # password = cipher.decrypt(password_crypt.decode("hex"))
 password = cipher.decrypt(bytes.fromhex(password_crypt))[len(iv) :].decode()
 
@@ -41,12 +43,12 @@ if browser == "chrome":
 url = "https://learn.co/"
 driver.get(url)
 
-
 login = driver.find_element_by_css_selector("input#user-email.input__field")
 password = driver.find_element_by_css_selector("input#user-password.input__field")
 login.send_keys(username)
-password.send_keys(password_text)
-password.send_keys(Keys.RETURN)
+
+driver.send_keys(password)
+driver.send_keys(Keys.RETURN)
 
 time.sleep(1)
 driver.get(start)
