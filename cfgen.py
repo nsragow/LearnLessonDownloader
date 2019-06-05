@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import bcrypt
 import json
 import sys
@@ -29,11 +30,12 @@ pw = default_input("password: ")
 print("leave blank if you wish to configure manually:")
 first_lesson = default_input("url of first lesson to pull: ", "")
 clone_to_path = default_input("path to clone lessons to: ", "")
-lesson_count = default_input("number of lessons to pull (default 10): ", 10)
+lesson_count = int(default_input("number of lessons to pull (default 10): ", 10))
 web_driver_path = default_input("path to web driver: ", "")
 browser = default_input(
     "type of browser you will use(default: chrome, firefox):", "chrome"
 )
+idle_time = default_input("time in sec between browser actions (default 1.5s)", 1.5)
 
 key = b"Sixteen byte key"
 iv = Random.new().read(AES.block_size)
@@ -47,6 +49,7 @@ config_data["clone_to_path"] = clone_to_path
 config_data["lesson_count"] = lesson_count
 config_data["web_driver_path"] = web_driver_path
 config_data["browser"] = browser
+config_data["idle_time"] = idle_time
 
 fm = "x"
 if os.path.isfile("config.json"):

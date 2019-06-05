@@ -7,7 +7,7 @@ import re
 import json
 from Crypto.Cipher import AES
 from Crypto import Random
-
+import sys
 
 config = None
 with open("config.json", "r") as cfg:
@@ -25,6 +25,8 @@ clone_to_path = config["clone_to_path"]
 lesson_count = config["lesson_count"]
 # the type of browser you are using
 browser = config["browser"]
+# idle time is how much time between each action
+idle_time = config["idle_time"]
 
 key = b"Sixteen byte key"
 iv = Random.new().read(AES.block_size)
@@ -50,7 +52,8 @@ login_field.send_keys(username)
 password_field.send_keys(password)
 password_field.send_keys(Keys.RETURN)
 
-time.sleep(1)
+
+time.sleep(idle_time)
 driver.get(start)
 gitlink = driver.find_element_by_css_selector(
     "a.button--color-grey-faint.button--icon-only"
@@ -61,7 +64,7 @@ proceed_b = "a.js--button.button.module--cloud__button--main"
 small_b = "div.js--feature-tour-done-button.js--next-button.status-alert__bubble--with-icon.status-alert__bubble--with-icon--color-inverted.status-alert__bubble--main.hoverable"
 big_b = "div.status-alert__button--main.button.button--height-large.button--corners-tight.button--layout-block.js--next-button"
 
-time.sleep(1)
+time.sleep(idle_time)
 
 
 def next_lesson():
@@ -95,9 +98,10 @@ for x in range(lesson_count):
 
     links.append(get_gitlink())
     next_lesson()
-    time.sleep(1)
+    time.sleep(idle_time)
 
-# sys.exit()
+#close the browser
+driver.close()
 
 for x in range(len(links)):
     next_path = "%s/%03d-%s" % (
@@ -106,3 +110,4 @@ for x in range(len(links)):
         re.sub(r".+(?<=\/)", "", links[x]),
     )
     run_bash(f"git clone {links[x]} {next_path}")
+
