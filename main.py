@@ -37,7 +37,7 @@ big_b = "div.status-alert__button--main.button.button--height-large.button--corn
 def main():
     password = None
     try:
-        auth.decrypt(password_crypt)
+        password = auth.decrypt(password_crypt)
     except:
         print("invalid credentials")
         sys.exit()

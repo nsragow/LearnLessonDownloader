@@ -34,7 +34,9 @@ web_driver_path = default_input("path to web driver: ", "")
 browser = default_input(
     "type of browser you will use(default: chrome, firefox):", "chrome"
 )
-idle_time = default_input("time in sec between browser actions (default 1.5s)", 1.5)
+idle_time = int(
+    default_input("time in sec between browser actions (default 1.5s)", 1.5)
+)
 
 config_data["email"] = em
 config_data["password"] = auth.encrypt(pw)
