@@ -43,12 +43,12 @@ if browser == "chrome":
 url = "https://learn.co/"
 driver.get(url)
 
-login = driver.find_element_by_css_selector("input#user-email.input__field")
-password = driver.find_element_by_css_selector("input#user-password.input__field")
-login.send_keys(username)
+login_field = driver.find_element_by_css_selector("input#user-email.input__field")
+password_field = driver.find_element_by_css_selector("input#user-password.input__field")
+login_field.send_keys(username)
 
-driver.send_keys(password)
-driver.send_keys(Keys.RETURN)
+password_field.send_keys(password)
+password_field.send_keys(Keys.RETURN)
 
 time.sleep(1)
 driver.get(start)
